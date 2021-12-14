@@ -23,25 +23,48 @@ import seaborn as sns # sets up styles and gives us more plotting options
 
 # First opening the csv file for the training data
 
-load = pd.read_csv('FDA-project/TravelInsurancePrediction.csv')
+load = pd.read_csv('FDA-project/TravelInsurancePrediction_edit.csv')
 
 #print(train_data.shape) # Prints (1987 , 10)
 
-'''
 
 train_data = load.to_numpy() #converts from panda dataframe tom numpy array
 
-train_data = train_data[: , 1:]
+train_data = train_data[: , 1:] #Slices off the indecies
 
-print(train_data.shape)
+print(train_data.shape) #Prints (1987 , 9)
 
-print (train_data[:5 , :])
+print (train_data[:5 , :]) #Prints the first 5 rows 
 
-'''
 
-train_x = load.drop(columns=['TravelInsurance'] , axis = 1)
-train_y = load['TravelInsurance']
+#Now I'm going to try making some histograms/graphs to display the info from the csv file
 
-model = GaussianNB()
+# 
 
-load.head()
+
+
+
+
+
+# Using a built in Naive Bayes function
+
+def GaussNB(load):
+
+    train_x = load.drop(columns=['TravelInsurance'] , axis = 1)
+    train_y = load['TravelInsurance']
+
+    model = GaussianNB(var_smoothing=0.25)  # Testing here with different var_smoothings; around 0.25 gives highests acc
+
+    # fit the model with the training data
+    model.fit(train_x,train_y)
+
+    # predict the target on the train dataset
+    predict_train = model.predict(train_x)
+    print('Target on train data',predict_train) 
+
+    # Accuray Score on train dataset
+    accuracy_train = accuracy_score(train_y,predict_train)
+    print('accuracy_score on train dataset : ', accuracy_train)
+
+
+#GaussNB(load)
