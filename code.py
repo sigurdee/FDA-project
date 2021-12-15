@@ -9,6 +9,7 @@ import pandas as pd # lets us handle data as dataframes
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score
 from sklearn.datasets import make_classification
+from sklearn.model_selection import train_test_split 
 import seaborn as sns
 
 # sets up pandas table display
@@ -39,7 +40,16 @@ print (train_data[:5 , :]) #Prints the first 5 rows
 
 #Now I'm going to try making some histograms/graphs to display the info from the csv file
 
-# 
+# Function for extracting a single column:
+
+def column(matrix , i):
+    return [row[i] for row in matrix]
+
+# Testing a histogram for age groups:
+
+def AgeHist(train_data):
+    age_list = column(train_data , 0)
+
 
 
 
@@ -50,21 +60,31 @@ print (train_data[:5 , :]) #Prints the first 5 rows
 
 def GaussNB(load):
 
-    train_x = load.drop(columns=['TravelInsurance'] , axis = 1)
-    train_y = load['TravelInsurance']
+    x = load.drop(columns=['TravelInsurance'] , axis = 1) 
+    y = load['TravelInsurance']
+
+    x_train , x_test , y_train , y_test = train_test_split(x , y , test_size=0.25 , random_state=5)
 
     model = GaussianNB(var_smoothing=0.25)  # Testing here with different var_smoothings; around 0.25 gives highests acc
 
     # fit the model with the training data
-    model.fit(train_x,train_y)
+    model.fit(x_train,y_train)
 
     # predict the target on the train dataset
-    predict_train = model.predict(train_x)
+    predict_train = model.predict(x_train)
     print('Target on train data',predict_train) 
 
     # Accuray Score on train dataset
-    accuracy_train = accuracy_score(train_y,predict_train)
+    accuracy_train = accuracy_score(y_train,predict_train)
     print('accuracy_score on train dataset : ', accuracy_train)
 
 
-#GaussNB(load)
+    # Predict target on test dataset (which is 25 percent of the train)
+    predict_test = model.predict(x_test)
+
+    #Accuracy of test dataset, for comparison
+    accuracy_test = accuracy_score(y_test , predict_test)
+    print('accuracy_score on test dataset: ', accuracy_test)
+
+
+GaussNB(load)
